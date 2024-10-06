@@ -9,13 +9,6 @@ from utils.evalution import eval_test, adv_test, adv_eval_train, eval_train
 from utils.mnist import build_model
 from utils.trades import train
 
-#srun -p llmit6 --pty --cpus-per-task=12 --gres=gpu:1 --mem-per-cpu 16384 python train_trades_mnist.py --AT_type Nat --model_name Transformer --attack_type PGD
-#srun -p llmit6 --pty --cpus-per-task=12 --gres=gpu:1 --mem-per-cpu 16384 python train_trades_mnist.py --AT_type Madry --model_name Mega --attack_type PGD
-#srun -p llmit6 --pty --cpus-per-task=12 --gres=gpu:1 --mem-per-cpu 16384 python train_trades_mnist.py --AT_type TRADE --model_name Mega --attack_type PGD
-#srun -p llmit6 --pty --cpus-per-task=12 --gres=gpu:1 --mem-per-cpu 16384 python train_trades_mnist.py --AT_type Madry --model_name S6 --attack_type PGD
-#srun -p llmit6 --pty --cpus-per-task=12 --gres=gpu:1 --mem-per-cpu 16384 python train_trades_mnist.py --AT_type TRADE --model_name S6 --attack_type PGD
-
-
 # args
 parser = Build_Parser()
 args = parser.parse_args()

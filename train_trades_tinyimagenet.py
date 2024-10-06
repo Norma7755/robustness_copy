@@ -9,27 +9,6 @@ from utils.evalution import eval_test, adv_test, adv_eval_train, eval_train
 from utils.trades import train
 
 
-# srun -p llmit6 --pty --cpus-per-task=12 --gres=gpu:1 --mem-per-cpu 16384 python train_trades_tinyimagenet.py --AT_type Nat --model_name Transformer --attack_type PGD
-# srun -p llmit6 --pty --cpus-per-task=12 --gres=gpu:1 --mem-per-cpu 16384 python train_trades_tinyimagenet.py --AT_type Madry --model_name Transformer --attack_type PGD
-# srun -p llmit6 --pty --cpus-per-task=12 --gres=gpu:1 --mem-per-cpu 16384 python train_trades_tinyimagenet.py --AT_type TRADE --model_name Transformer --attack_type PGD
-
-# srun -p llmit6 --pty --cpus-per-task=12 --gres=gpu:1 --mem-per-cpu 16384 python train_trades_tinyimagenet.py --AT_type Madry --model_name DSS --attack_type PGD --use_inject --inject_method 1
-# srun -p llmit6 --pty --cpus-per-task=12 --gres=gpu:1 --mem-per-cpu 16384 python train_trades_tinyimagenet.py --AT_type TRADE --model_name DSS --attack_type PGD --use_inject --inject_method 1
-
-
-# srun -p llmit6 --pty --cpus-per-task=12 --gres=gpu:1 --mem-per-cpu 16384 python train_trades_tinyimagenet.py --AT_type Madry --model_name DSS --attack_type PGD --use_inject --inject_method 1
-# srun -p llmit6 --pty --cpus-per-task=12 --gres=gpu:1 --mem-per-cpu 16384 python train_trades_tinyimagenet.py --AT_type TRADE --model_name DSS --attack_type PGD --use_inject --inject_method 1
-
-# python train_trades_tinyimagenet.py --AT_type Nat --model_name SSM --attack_type PGD
-# CUDA_VISIBLE_DEVICES=1 python train_trades_cifar10.py --AT_type Madry --model_name SSM --attack_type PGD
-# CUDA_VISIBLE_DEVICES=2 python train_trades_cifar10.py --AT_type Nat --model_name SSM --attack_type PGD
-
-# CUDA_VISIBLE_DEVICES=0 python train_trades_cifar10.py --AT_type Madry --model_name Res18 --attack_type PGD --num_layers 6
-# CUDA_VISIBLE_DEVICES=1 python train_trades_cifar10.py --AT_type TRADE --model_name Res18 --attack_type PGD --num_layers 6
-# CUDA_VISIBLE_DEVICES=2 python train_trades_cifar10.py --AT_type Madry --model_name SSM --attack_type PGD --num_layers 6
-# CUDA_VISIBLE_DEVICES=3 python train_trades_cifar10.py --AT_type TRADE --model_name SSM --attack_type PGD --num_layers 6
-
-
 # args
 parser = Build_Parser()
 args = parser.parse_args()
