@@ -30,7 +30,7 @@ All run scripts are located in the `scripts` folder. To obtain the training resu
 python train_trades_mnist.py --AT_type Nat --model_name SSM --attack_type PGD --model-dir checkpoints/model-MNIST
 ```
 
-Where `--AT_type` can be specifies different training methods, `--model_name` specifies the model type, and `--model-dir` specifies the location to save the results.
+Where `--AT_type` specifies different training methods, `--model_name` specifies the model type, and `--model-dir` specifies the location to save the results.
 
 To obtain results for CIFAR10 and Tiny-Imagenet, please run the `train_trades_cifar10.py` and `train_freeat_tinyimagenet.py` scripts:
 
