@@ -8,6 +8,7 @@ from utils.args import Build_Parser
 from utils.YOPO import Hamiltonian, FastGradientLayerOneTrainer, adv_train
 from utils.evalution import eval_test, adv_test, adv_eval_train, eval_train
 from utils.mnist import build_model
+from models.SSM import SSM, SSM_Individual_Head, Mega, S5_SSM, S6_SSM, Transformer
 
 
 # args
@@ -31,18 +32,33 @@ test_loader = torch.utils.data.DataLoader(
                    transform=transforms.ToTensor()),
                    batch_size=args.test_batch_size, shuffle=False, num_workers=args.workers, pin_memory=True)
 
-
-def adjust_learning_rate(optimizer, epoch):
-    """decrease the learning rate"""
-    lr = args.lr
-    if epoch >= 75:
-        lr = args.lr * 0.1
-    if epoch >= 90:
-        lr = args.lr * 0.01
-    if epoch >= 100:
-        lr = args.lr * 0.001
-    for param_group in optimizer.param_groups:
-        param_group['lr'] = lr
+def build_model(args, model_name):
+    if model_name == 'SSM':
+        if args.rest_lyap:
+            model = SSM(d_input=1, d_model=128, n_layers=args.num_layers, use_lyap=True)
+        else:
+            if args.use_inject:
+                model = SSM(d_input=1, d_model=128, n_layers=args.num_layers, \
+                    use_inject=True,inject_method=args.inject_method, patch_size=args.patch_size)
+            else:
+                model = SSM(d_input=1, d_model=128, n_layers=args.num_layers, patch_size=args.patch_size)
+    elif model_name == 'DSS':
+        if args.use_inject:
+            model = SSM(d_input=1, d_model=128, n_layers=args.num_layers, mode = 'diag', \
+                use_inject=True,inject_method=args.inject_method, patch_size=args.patch_size)
+        else:
+            model = SSM(d_input=1, d_model=128, n_layers=args.num_layers, mode = 'diag', patch_size=args.patch_size)
+    elif model_name == 'S5':
+        model = S5_SSM(d_input=1, d_model=128, n_layers=args.num_layers, patch_size=args.patch_size)
+    elif model_name == 'Mega':
+        model = Mega(d_input=1, d_model=128, n_layers=args.num_layers, seq_len=28*28, patch_size=args.patch_size) 
+    elif model_name == 'S6':
+        model = S6_SSM(d_input=1, d_model=128, n_layers=args.num_layers, patch_size=args.patch_size)     
+    elif model_name == 'SSM_ind_head':
+        model = SSM_Individual_Head(d_input=1)
+    elif model_name == 'Transformer':
+        model = Transformer(d_input=1, n_layers=args.num_layers, patch_size=args.patch_size)
+    return model
 
 def main_eval():
     model = build_model(args, args.model_name).to(device)

@@ -54,19 +54,19 @@ class Hamiltonian(_Loss):
 
 
     def forward(self, x, p):
-        print(x.shape)
-        print(p.shape)
-        # y = self.layer(x)
+        # print(x.shape)
+        # print(p.shape)
+        y = self.layer(x)
         # l2 = cal_l2_norm(self.layer)
-        # bs, channel, height, weight = y.shape
-        # p = p.view(bs, channel, height, weight)
-        bs, channel, height, weight = x.shape
-        y = self.layer(x.view(bs, height * weight, channel))
+        bs, channel, height, weight = y.shape
+        p = p.view(bs, channel, height, weight)
+        # bs, channel, height, weight = x.shape
+        # y = self.layer(x.view(bs, height * weight, channel))
 
         # l2 = cal_l2_norm(self.layer)
         # bs, channel, height, weight = y.shape
-        p = p.view(bs, channel, height, weight)
-        print(y.shape, p.shape)
+        # p = p.view(bs, channel, height, weight)
+        # print(y.shape, p.shape)
         H = torch.sum(y * p)
 
         #H = H - self.reg_cof * l2
