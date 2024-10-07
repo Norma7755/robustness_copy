@@ -56,10 +56,6 @@ def main():
     log_path = os.path.join(model_dir,'train_log'+args.model_name+args.AT_type+'.txt')
     log_file = open(log_path, 'w')
     model = build_model(args, args.model_name).to(device)
-    if args.rest_lyap:
-        state = torch.load('/root/bqqi/fscil/robustness/TRADES/checkpoints/model-cifar/SSMTRADE-epoch180_not_trainable.pt')
-        model.load_state_dict(state, strict=False)
-        optimizer = optim.Adam(model.adjusts.parameters(), lr=args.lr, weight_decay=args.weight_decay)
     if torch.cuda.device_count() > 1:
         print("Using", torch.cuda.device_count(), "GPUs!")
         model = nn.DataParallel(model)

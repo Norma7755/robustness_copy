@@ -3,15 +3,10 @@ from pathlib import Path
 
 def Build_Parser():
     parser = argparse.ArgumentParser(description='PyTorch Adversarial Training')
-    parser.add_argument('--batch-size', type=int, default=128, metavar='N',
-                        help='input batch size for training (default: 128)')
-    parser.add_argument('--patch-size', type=int, default=4, metavar='N',
+    parser.add_argument('--batch-size', type=int, default=256, metavar='N',
                         help='input batch size for training (default: 128)')
     parser.add_argument('--test-batch-size', type=int, default=256, metavar='N')
-    parser.add_argument('--num-classes', type=int, default=50, metavar='N')
-    parser.add_argument('--num-train', type=int, default=100, metavar='N')
-    parser.add_argument('--num-test', type=int, default=10, metavar='N',
-                        help='input batch size for testing (default: 128)')
+    parser.add_argument('--num-classes', type=int, default=10, metavar='N')
     parser.add_argument('--epochs', type=int, default=180, metavar='N',
                         help='number of epochs to train')
     parser.add_argument('--workers', type=int, default=12, metavar='N',
@@ -20,20 +15,12 @@ def Build_Parser():
                         type=float, metavar='W')
     parser.add_argument('--lr', type=float, default=0.001, metavar='LR',
                         help='learning rate')
-    parser.add_argument('--momentum', type=float, default=0.9, metavar='M',
-                        help='SGD momentum')
     parser.add_argument('--no-cuda', action='store_true', default=False,
                         help='disables CUDA training')
-    parser.add_argument('--individual_heads', action='store_true', default=False,
-                        help='individual heads')
-    parser.add_argument('--rest_lyap', action='store_true', default=False,
-                        help='restrict lyapnov')
     parser.add_argument('--use_inject', action='store_true', default=False,
                         help='use noise inject')
     parser.add_argument('--inject_method', type=int, default=-1,
                         help='the method used in inject training')
-    parser.add_argument('--test_rest_lyap', action='store_true', default=False,
-                        help='restrict lyapnov')
     parser.add_argument('--epsilon', default=8/255,
                         help='perturbation')
     parser.add_argument('--num-steps', default=10,
@@ -44,8 +31,8 @@ def Build_Parser():
                         help='regularization, i.e., 1/lambda in TRADES')
     parser.add_argument('--seed', type=int, default=5, metavar='S',
                         help='random seed (default: 5)')
-    parser.add_argument('--num_layers', type=int, default=4,
-                        help='layers of SSM')
+    parser.add_argument('--patch-size', type=int, default=4, metavar='N',
+                        help='input batch size for training (default: 128)')
     parser.add_argument('--log-interval', type=int, default=100, metavar='N',
                         help='how many batches to wait before logging training status')
     parser.add_argument('--model-dir', default='checkpoints',
@@ -56,8 +43,8 @@ def Build_Parser():
                         help='Madry, TRADE, FreeAT or YOPO in adversrial training stage')
     parser.add_argument('--attack_type', default='PGD', type=str,
                         help='PGD or AA attack in test stage')
-    parser.add_argument('--model_name', default='Res18', type=str,
-                        help='SSM, DSS, S5, Mega, S6')
+    parser.add_argument('--model_name', default='SSM', type=str,
+                        help='SSM, DSS, S5, Mega, S6, Transformer')
     parser.add_argument('--AA_lags', type=int, default=4, metavar='N',
                     help='how many batches to wait before logging training status')
     #! AA evaluation part

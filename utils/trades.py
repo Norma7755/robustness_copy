@@ -103,20 +103,9 @@ def train(args, model, device, train_loader, optimizer, epoch, type='Madry'):
                 data_adv = attack.perturb(data, target)
             else:
                 data_adv = attack(data, target)
-
-            if args.rest_lyap:
-                out, loss_lyap = model(data_adv, ret_lyap = True)
-            else:       
-                out = model(data_adv)
-            if args.individual_heads:
-                loss = 0.0
-                for output in out:
-                    loss += criterion(output, target)
-            else:
-                if args.rest_lyap:
-                    loss = loss_lyap.mean()
-                else:
-                    loss = criterion(out, target)
+     
+            out = model(data_adv)
+            loss = criterion(out, target)
                        
         elif type == 'TRADE':
             loss = trades_loss(model=model,
@@ -129,19 +118,8 @@ def train(args, model, device, train_loader, optimizer, epoch, type='Madry'):
                            beta=args.beta)
         elif type == 'Nat':
             criterion = nn.CrossEntropyLoss()
-            if args.rest_lyap:
-                out, loss_lyap = model(data, ret_lyap = True)
-            else:
-                out = model(data)
-            if args.individual_heads:
-                loss = 0.0
-                for output in out:
-                    loss += criterion(output, target)
-            else:
-                if args.rest_lyap:
-                    loss = loss_lyap.mean()
-                else:
-                    loss = criterion(out, target)
+            out = model(data)
+            loss = criterion(out, target)
                                     
         loss.backward()
         optimizer.step()

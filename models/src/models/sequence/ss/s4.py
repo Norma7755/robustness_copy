@@ -158,22 +158,6 @@ class S4(nn.Module):
 
         Returns: same shape as u
         """
-        # u_injected = u
-        # if self.use_inject:
-        #     if inject_method==1: #! Method1
-        #         # print('Method1')
-        #         scale, bias = self.inject(u.clone().detach())
-        #         u_injected = scale * u.clone().detach() + bias
-        #         u = u_injected
-        #     elif inject_method==2: #! Method2
-        #         scale, bias = self.inject(u)
-        #         u_injected = scale * u + bias
-        #         u = u_injected
-        #     elif inject_method==3:#! Method3
-        #         # print('Method3')
-        #         scale, bias = self.inject(u)
-        #         u_injected = scale * u + bias
-        #         u = u_injected
             
         if not self.transposed:
             u = u.transpose(-1, -2)
@@ -233,20 +217,8 @@ class S4(nn.Module):
         
         #todo
         if use_inject:
-            # if inject_method==0: #! Method0
-            #     # print('Method1')
-            #     scale, bias = self.inject(y.clone().detach())
-            #     u_injected = scale * y.clone().detach() + bias
-            #     y = u_injected
-            # if inject_method==4: #! Method4
-            #     scale, bias = self.inject(y)
-            #     u_injected = scale * y + bias
-            #     y = u_injected
             y = self.adss(y)
         if not self.linear:
-            # if self.glu:
-            #     y = self.reshape_linear(y)
-            # y = self.activation(y)
             y = self.dropout(y)
         
         if not self.linear:
@@ -255,7 +227,6 @@ class S4(nn.Module):
         
         if rety:
             return y, next_state, y_ori
-
         else:
             return y, next_state
             

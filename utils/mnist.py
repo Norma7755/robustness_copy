@@ -2,14 +2,11 @@ from models.SSM import SSM, SSM_Individual_Head, Mega, S5_SSM, S6_SSM, Transform
 
 def build_model(args, model_name):
     if model_name == 'SSM':
-        if args.rest_lyap:
-            model = SSM(d_input=1, d_model=128, n_layers=args.num_layers, use_lyap=True)
+        if args.use_inject:
+            model = SSM(d_input=1, d_model=128, n_layers=args.num_layers, \
+                use_inject=True,inject_method=args.inject_method)
         else:
-            if args.use_inject:
-                model = SSM(d_input=1, d_model=128, n_layers=args.num_layers, \
-                    use_inject=True,inject_method=args.inject_method)
-            else:
-                model = SSM(d_input=1, d_model=128, n_layers=args.num_layers)
+            model = SSM(d_input=1, d_model=128, n_layers=args.num_layers)
     elif model_name == 'DSS':
         if args.use_inject:
             model = SSM(d_input=1, d_model=128, n_layers=args.num_layers, mode = 'diag', \

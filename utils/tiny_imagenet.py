@@ -160,14 +160,11 @@ def filter_dataset_by_class(dataset, num_samples_per_class):
 
 def build_model(args, model_name):
     if model_name == 'SSM':
-        if args.rest_lyap:
-            model = SSM(d_input=3, d_model=128, n_layers=args.num_layers, use_lyap=True, d_output=args.num_classes, patch_size=args.patch_size)
+        if args.use_inject:
+            model = SSM(d_input=3, d_model=128, n_layers=args.num_layers, \
+                use_inject=True,inject_method=args.inject_method, d_output=args.num_classes, patch_size=args.patch_size)
         else:
-            if args.use_inject:
-                model = SSM(d_input=3, d_model=128, n_layers=args.num_layers, \
-                    use_inject=True,inject_method=args.inject_method, d_output=args.num_classes, patch_size=args.patch_size)
-            else:
-                model = SSM(d_input=3, d_model=128, n_layers=args.num_layers, d_output=args.num_classes, patch_size=args.patch_size)
+            model = SSM(d_input=3, d_model=128, n_layers=args.num_layers, d_output=args.num_classes, patch_size=args.patch_size)
     elif model_name == 'DSS':
         if args.use_inject:
             model = SSM(d_input=3, d_model=128, n_layers=args.num_layers, mode = 'diag', \
