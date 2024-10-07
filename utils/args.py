@@ -31,8 +31,8 @@ def Build_Parser():
                         help='regularization, i.e., 1/lambda in TRADES')
     parser.add_argument('--seed', type=int, default=5, metavar='S',
                         help='random seed (default: 5)')
-    parser.add_argument('--patch-size', type=int, default=4, metavar='N',
-                        help='input batch size for training (default: 128)')
+    parser.add_argument('--num_layers', type=int, default=4,
+                    help='layers of SSM')
     parser.add_argument('--log-interval', type=int, default=100, metavar='N',
                         help='how many batches to wait before logging training status')
     parser.add_argument('--model-dir', default='checkpoints',

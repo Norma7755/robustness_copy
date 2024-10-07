@@ -9,7 +9,6 @@ from utils.args import Build_Parser
 from utils.YOPO import Hamiltonian, FastGradientLayerOneTrainer, adv_train
 from utils.evalution import eval_test, adv_test, adv_eval_train, eval_train
 from utils.cifar10 import build_model
-from models.SSM import SSM, SSM_Individual_Head, Mega, S5_SSM, S6_SSM, Transformer
 
 # args
 parser = Build_Parser()
@@ -35,31 +34,6 @@ train_loader = torch.utils.data.DataLoader(trainset, batch_size=args.batch_size,
 testset = torchvision.datasets.CIFAR10(root='../data', train=False, download=True, transform=transform_test)
 test_loader = torch.utils.data.DataLoader(testset, batch_size=args.test_batch_size, shuffle=False, num_workers = 12, pin_memory = True)
 
-
-def build_model(args, model_name):
-    if model_name == 'SSM':
-        if args.use_inject:
-            model = SSM(d_input=3, d_model=128, n_layers=args.num_layers, \
-                use_inject=True,inject_method=args.inject_method, d_output=args.num_classes, patch_size=args.patch_size)
-        else:
-            model = SSM(d_input=3, d_model=128, n_layers=args.num_layers, d_output=args.num_classes, patch_size=args.patch_size)
-    elif model_name == 'DSS':
-        if args.use_inject:
-            model = SSM(d_input=3, d_model=128, n_layers=args.num_layers, mode = 'diag', \
-                use_inject=True,inject_method=args.inject_method, d_output=args.num_classes, patch_size=args.patch_size)
-        else:
-            model = SSM(d_input=3, d_model=128, n_layers=args.num_layers, mode = 'diag', d_output=args.num_classes, patch_size=args.patch_size)
-    elif model_name == 'S5':
-        model = S5_SSM(d_input=3, d_model=128, n_layers=args.num_layers, d_output=args.num_classes, patch_size=args.patch_size)
-    elif model_name == 'Mega':
-        model = Mega(d_input=3, d_model=128, n_layers=args.num_layers, d_output=args.num_classes, seq_len=16*16, patch_size=args.patch_size) 
-    elif model_name == 'S6':
-        model = S6_SSM(d_input=3, d_model=128, n_layers=args.num_layers, d_output=args.num_classes, patch_size=args.patch_size)     
-    elif model_name == 'SSM_ind_head':
-        model = SSM_Individual_Head(d_input=3)
-    elif model_name == 'Transformer':
-        model = Transformer(d_input=3, n_layers=args.num_layers, d_output=args.num_classes, patch_size=args.patch_size)
-    return model
 
 def main_eval():
     model = build_model(args, args.model_name).to(device)

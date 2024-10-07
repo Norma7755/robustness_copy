@@ -162,23 +162,23 @@ def build_model(args, model_name):
     if model_name == 'SSM':
         if args.use_inject:
             model = SSM(d_input=3, d_model=128, n_layers=args.num_layers, \
-                use_inject=True,inject_method=args.inject_method, d_output=args.num_classes, patch_size=args.patch_size)
+                use_inject=True,inject_method=args.inject_method, d_output=args.num_classes )
         else:
-            model = SSM(d_input=3, d_model=128, n_layers=args.num_layers, d_output=args.num_classes, patch_size=args.patch_size)
+            model = SSM(d_input=3, d_model=128, n_layers=args.num_layers, d_output=args.num_classes )
     elif model_name == 'DSS':
         if args.use_inject:
             model = SSM(d_input=3, d_model=128, n_layers=args.num_layers, mode = 'diag', \
-                use_inject=True,inject_method=args.inject_method, d_output=args.num_classes, patch_size=args.patch_size)
+                use_inject=True,inject_method=args.inject_method, d_output=args.num_classes )
         else:
-            model = SSM(d_input=3, d_model=128, n_layers=args.num_layers, mode = 'diag', d_output=args.num_classes, patch_size=args.patch_size)
+            model = SSM(d_input=3, d_model=128, n_layers=args.num_layers, mode = 'diag', d_output=args.num_classes )
     elif model_name == 'S5':
-        model = S5_SSM(d_input=3, d_model=128, n_layers=args.num_layers, d_output=args.num_classes, patch_size=args.patch_size)
+        model = S5_SSM(d_input=3, d_model=128, n_layers=args.num_layers, d_output=args.num_classes )
     elif model_name == 'Mega':
-        model = Mega(d_input=3, d_model=128, n_layers=args.num_layers, d_output=args.num_classes, seq_len=16*16, patch_size=args.patch_size) 
+        model = Mega(d_input=3, d_model=128, n_layers=args.num_layers, d_output=args.num_classes, seq_len=16*16 ) 
     elif model_name == 'S6':
-        model = S6_SSM(d_input=3, d_model=128, n_layers=args.num_layers, d_output=args.num_classes, patch_size=args.patch_size)     
+        model = S6_SSM(d_input=3, d_model=128, n_layers=args.num_layers, d_output=args.num_classes )     
     elif model_name == 'SSM_ind_head':
         model = SSM_Individual_Head(d_input=3)
     elif model_name == 'Transformer':
-        model = Transformer(d_input=3, n_layers=args.num_layers, d_output=args.num_classes, patch_size=args.patch_size)
+        model = Transformer(d_input=3, n_layers=args.num_layers, d_output=args.num_classes )
     return model
