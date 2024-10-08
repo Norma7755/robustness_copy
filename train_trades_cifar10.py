@@ -102,7 +102,10 @@ def AA_adv_test(model,args,log_path):
             
 
 def main():
-    log_path = os.path.join(model_dir,'train_log'+args.model_name+args.AT_type+'.txt')
+    if args.use_AdSS:
+        log_path = os.path.join(model_dir,'train_log'+args.model_name+'AdSS_{}'.format(args.AdSS_Type)+args.AT_type+'.txt')
+    else:    
+        log_path = os.path.join(model_dir,'train_log'+args.model_name+args.AT_type+'.txt')
     log_file = open(log_path, 'w')
     model = build_model(args, args.model_name).to(device)
     if torch.cuda.device_count() > 1:
@@ -115,41 +118,20 @@ def main():
         # adversarial training
         train(args, model, device, train_loader, optimizer, epoch, args.AT_type)
 
-        # evaluation on natural examples
-        # print('================================================================')
-        # train_loss, train_acc = eval_train(args, model, device, train_loader)
-        
-        # test_loss, test_acc = eval_test(args, model, device, test_loader)
-        # adv_test_loss, adv_test_acc = adv_test(args, model, device, test_loader, args.attack_type)
-
-        # if args.AT_type != 'Nat':
-        #     adv_test_loss, adv_test_acc = AA_adv_test()
-            # adv_train_loss, adv_train_acc = adv_eval_train(args, model, device, train_loader, args.attack_type)
         print('================================================================')
         if args.AT_type != 'Nat' and epoch % args.AA_lags == 0:
             with open(log_path, 'a') as f:
                 f.write('now epoch:' + str(epoch) + '\n')
                 f.flush()
             AA_adv_test(model, args, log_path)
-            # log_file.write('Epoch {}, Adv Test Loss: {:.4f}, Adv Test Acc: {:.4f}\n'
-            #      .format(epoch, adv_test_loss, adv_test_acc))
-            # log_file.write('Epoch {}, Train Loss: {:.4f}, Train Acc: {:.4f}, Test Loss: {:.4f}, Test Acc: {:.4f}, Adv Train Loss: {:.4f}, Adv Train Acc: {:.4f}, Adv Test Loss: {:.4f}, Adv Test Acc: {:.4f}\n'
-            #      .format(epoch, train_loss, train_acc, test_loss, test_acc, adv_train_loss, adv_train_acc, adv_test_loss, adv_test_acc))
-        # else:
-        #     log_file.write('Epoch {}, Train Loss: {:.4f}, Train Acc: {:.4f}, Test Loss: {:.4f}, Test Acc: {:.4f}, Adv Test Loss: {:.4f}, Adv Test Acc: {:.4f}\n'
-        #          .format(epoch, train_loss, train_acc, test_loss, test_acc, adv_test_loss, adv_test_acc))
-    
         # save checkpoint
-        if epoch % args.save_freq == 0:
-            if args.use_inject:
-                torch.save(model.state_dict(),
-                       os.path.join(model_dir, args.model_name+args.AT_type+'{}'.format(args.inject_method)+ '-epoch{}.pt'.format(epoch)))
-            else:
-                torch.save(model.state_dict(),
-                       os.path.join(model_dir, args.model_name+args.AT_type+ '-epoch{}.pt'.format(epoch)))
+        if args.use_AdSS:
+            torch.save(model.state_dict(),
+                    os.path.join(model_dir, args.model_name+args.AT_type+'{}'.format(args.AdSS_Type)+ '-epoch{}.pt'.format(epoch)))
+        else:
+            torch.save(model.state_dict(),
+                    os.path.join(model_dir, args.model_name+args.AT_type+ '-epoch{}.pt'.format(epoch)))
         scheduler.step()
 
 if __name__ == '__main__':
-    print(args)
     main()
-    # main_eval()

@@ -27,16 +27,17 @@ from models.src.models.sequence.ss.kernel import HippoSSKernel
 from models.src.models.nn import LinearActivation, Activation, Normalization
 
 class AdSS(nn.Module):
-    def __init__(self, dim, inject_method):
+    def __init__(self, dim, AdSS_Type):
         super(AdSS, self).__init__()
         self.dim = dim
         self.scale = nn.Linear(dim, dim, bias=False)
-        if inject_method == 1:
+        if AdSS_Type == 'relu':
             self.act = nn.ReLU(inplace=True)
-        elif inject_method == 2:
+        elif AdSS_Type == 'sgmd':
             self.act = nn.Sigmoid()
-        elif inject_method == 3:
+        elif AdSS_Type == 'tanh':
             self.act = nn.Tanh()
+        # print('AdSS Type:', AdSS_Type)
         
     def forward(self, x):
         
@@ -67,8 +68,8 @@ class S4(nn.Module):
         verbose=False,
         shift=False,
         linear=False,
-        use_inject=False,
-        inject_method=1,
+        use_AdSS=False,
+        AdSS_Type='relu',
         # SSM Kernel arguments
         **kernel_args,
     ):
@@ -132,10 +133,10 @@ class S4(nn.Module):
             else:
                 self.norm = nn.Identity()
 
-        self.use_inject = use_inject
-        self.inject_method = inject_method
-        if use_inject:
-            self.adss = AdSS(d_model, inject_method)
+        self.use_AdSS = use_AdSS
+        self.AdSS_Type = AdSS_Type
+        if use_AdSS:
+            self.adss = AdSS(d_model, AdSS_Type)
         
         # position-wise output transform to mix features
         if not self.linear:
@@ -150,7 +151,7 @@ class S4(nn.Module):
             )
 
     def forward(
-        self, u, state=None, rety=False, use_inject=False, **kwargs
+        self, u, state=None, rety=False, **kwargs
     ):  # absorbs return_output and transformer src mask
         """
         u: (B H L) if self.transposed else (B L H)
@@ -216,7 +217,7 @@ class S4(nn.Module):
             y = y.transpose(-1, -2)   
         
         #todo
-        if use_inject:
+        if self.use_AdSS:
             y = self.adss(y)
         if not self.linear:
             y = self.dropout(y)

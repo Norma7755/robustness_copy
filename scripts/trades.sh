@@ -26,27 +26,15 @@ srun -p llmit6 --pty --cpus-per-task=12 --gres=gpu:1 --mem-per-cpu 16384 python 
 
 #! Adss
 #! MNIST
-srun -p llmit6 --pty --cpus-per-task=12 --gres=gpu:1 --mem-per-cpu 16384 python train_trades_mnist.py --AT_type TRADE --model_name SSM --attack_type PGD --model-dir checkpoints/model-MNIST --use_inject --inject_method 1
-srun -p llmit6 --pty --cpus-per-task=12 --gres=gpu:1 --mem-per-cpu 16384 python train_trades_mnist.py --AT_type TRADE --model_name SSM --attack_type PGD --model-dir checkpoints/model-MNIST --use_inject --inject_method 2
-srun -p llmit6 --pty --cpus-per-task=12 --gres=gpu:1 --mem-per-cpu 16384 python train_trades_mnist.py --AT_type TRADE --model_name SSM --attack_type PGD --model-dir checkpoints/model-MNIST --use_inject --inject_method 3
-srun -p llmit6 --pty --cpus-per-task=12 --gres=gpu:1 --mem-per-cpu 16384 python train_trades_mnist.py --AT_type TRADE --model_name DSS --attack_type PGD --model-dir checkpoints/model-MNIST --use_inject --inject_method 1
-srun -p llmit6 --pty --cpus-per-task=12 --gres=gpu:1 --mem-per-cpu 16384 python train_trades_mnist.py --AT_type TRADE --model_name DSS --attack_type PGD --model-dir checkpoints/model-MNIST --use_inject --inject_method 2
-srun -p llmit6 --pty --cpus-per-task=12 --gres=gpu:1 --mem-per-cpu 16384 python train_trades_mnist.py --AT_type TRADE --model_name DSS --attack_type PGD --model-dir checkpoints/model-MNIST --use_inject --inject_method 3
+srun -p llmit6 --pty --cpus-per-task=12 --gres=gpu:1 --mem-per-cpu 16384 python train_trades_mnist.py --AT_type TRADE --model_name SSM --attack_type PGD --model-dir checkpoints/model-MNIST --use_AdSS --AdSS_Type relu
+srun -p llmit6 --pty --cpus-per-task=12 --gres=gpu:1 --mem-per-cpu 16384 python train_trades_mnist.py --AT_type TRADE --model_name DSS --attack_type PGD --model-dir checkpoints/model-MNIST --use_AdSS --AdSS_Type relu
 
 
 #! CIFAR10
-srun -p llmit6 --pty --cpus-per-task=12 --gres=gpu:1 --mem-per-cpu 16384 python train_trades_cifar10.py --AT_type TRADE --model_name SSM --attack_type PGD --model-dir checkpoints/model-CIFAR10 --use_inject --inject_method 1
-srun -p llmit6 --pty --cpus-per-task=12 --gres=gpu:1 --mem-per-cpu 16384 python train_trades_cifar10.py --AT_type TRADE --model_name SSM --attack_type PGD --model-dir checkpoints/model-CIFAR10 --use_inject --inject_method 2
-srun -p llmit6 --pty --cpus-per-task=12 --gres=gpu:1 --mem-per-cpu 16384 python train_trades_cifar10.py --AT_type TRADE --model_name SSM --attack_type PGD --model-dir checkpoints/model-CIFAR10 --use_inject --inject_method 3
-srun -p llmit6 --pty --cpus-per-task=12 --gres=gpu:1 --mem-per-cpu 16384 python train_trades_cifar10.py --AT_type TRADE --model_name DSS --attack_type PGD --model-dir checkpoints/model-CIFAR10 --use_inject --inject_method 1
-srun -p llmit6 --pty --cpus-per-task=12 --gres=gpu:1 --mem-per-cpu 16384 python train_trades_cifar10.py --AT_type TRADE --model_name DSS --attack_type PGD --model-dir checkpoints/model-CIFAR10 --use_inject --inject_method 2
-srun -p llmit6 --pty --cpus-per-task=12 --gres=gpu:1 --mem-per-cpu 16384 python train_trades_cifar10.py --AT_type TRADE --model_name DSS --attack_type PGD --model-dir checkpoints/model-CIFAR10 --use_inject --inject_method 3
+srun -p llmit6 --pty --cpus-per-task=12 --gres=gpu:1 --mem-per-cpu 16384 python train_trades_cifar10.py --AT_type TRADE --model_name SSM --attack_type PGD --model-dir checkpoints/model-CIFAR10 --use_AdSS --AdSS_Type relu
+srun -p llmit6 --pty --cpus-per-task=12 --gres=gpu:1 --mem-per-cpu 16384 python train_trades_cifar10.py --AT_type TRADE --model_name DSS --attack_type PGD --model-dir checkpoints/model-CIFAR10 --use_AdSS --AdSS_Type relu
 
 
 #! tiny imagenet
-srun -p llmit6 --pty --cpus-per-task=12 --gres=gpu:1 --mem-per-cpu 16384 python train_trades_tinyimagenet.py --AT_type TRADE --model_name SSM --attack_type PGD --model-dir checkpoints/model-tinyimagenet --use_inject --inject_method 1
-srun -p llmit6 --pty --cpus-per-task=12 --gres=gpu:1 --mem-per-cpu 16384 python train_trades_tinyimagenet.py --AT_type TRADE --model_name SSM --attack_type PGD --model-dir checkpoints/model-tinyimagenet --use_inject --inject_method 2
-srun -p llmit6 --pty --cpus-per-task=12 --gres=gpu:1 --mem-per-cpu 16384 python train_trades_tinyimagenet.py --AT_type TRADE --model_name SSM --attack_type PGD --model-dir checkpoints/model-tinyimagenet --use_inject --inject_method 3
-srun -p llmit6 --pty --cpus-per-task=12 --gres=gpu:1 --mem-per-cpu 16384 python train_trades_tinyimagenet.py --AT_type TRADE --model_name DSS --attack_type PGD --model-dir checkpoints/model-tinyimagenet --use_inject --inject_method 1
-srun -p llmit6 --pty --cpus-per-task=12 --gres=gpu:1 --mem-per-cpu 16384 python train_trades_tinyimagenet.py --AT_type TRADE --model_name DSS --attack_type PGD --model-dir checkpoints/model-tinyimagenet --use_inject --inject_method 2
-srun -p llmit6 --pty --cpus-per-task=12 --gres=gpu:1 --mem-per-cpu 16384 python train_trades_tinyimagenet.py --AT_type TRADE --model_name DSS --attack_type PGD --model-dir checkpoints/model-tinyimagenet --use_inject --inject_method 3
+srun -p llmit6 --pty --cpus-per-task=12 --gres=gpu:1 --mem-per-cpu 16384 python train_trades_tinyimagenet.py --AT_type TRADE --model_name SSM --attack_type PGD --model-dir checkpoints/model-tinyimagenet --use_AdSS --AdSS_Type relu
+srun -p llmit6 --pty --cpus-per-task=12 --gres=gpu:1 --mem-per-cpu 16384 python train_trades_tinyimagenet.py --AT_type TRADE --model_name DSS --attack_type PGD --model-dir checkpoints/model-tinyimagenet --use_AdSS --AdSS_Type relu

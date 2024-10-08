@@ -6,7 +6,7 @@ from torch.utils.data import Subset
 import random
 from collections import defaultdict
 from torchvision import transforms
-from models.SSM import SSM, SSM_Individual_Head, Mega, S5_SSM, S6_SSM, Transformer
+from models.SSM import SSM, Mega, S5_SSM, S6_SSM
 
 class TrainTinyImageNet(Dataset):
     def __init__(self, root, id, transform=None) -> None:
@@ -160,15 +160,15 @@ def filter_dataset_by_class(dataset, num_samples_per_class):
 
 def build_model(args, model_name):
     if model_name == 'SSM':
-        if args.use_inject:
+        if args.use_AdSS:
             model = SSM(d_input=3, d_model=128, n_layers=args.num_layers, \
-                use_inject=True,inject_method=args.inject_method, d_output=args.num_classes )
+                use_AdSS=True,AdSS_Type=args.AdSS_Type, d_output=args.num_classes )
         else:
             model = SSM(d_input=3, d_model=128, n_layers=args.num_layers, d_output=args.num_classes )
     elif model_name == 'DSS':
-        if args.use_inject:
+        if args.use_AdSS:
             model = SSM(d_input=3, d_model=128, n_layers=args.num_layers, mode = 'diag', \
-                use_inject=True,inject_method=args.inject_method, d_output=args.num_classes )
+                use_AdSS=True,AdSS_Type=args.AdSS_Type, d_output=args.num_classes )
         else:
             model = SSM(d_input=3, d_model=128, n_layers=args.num_layers, mode = 'diag', d_output=args.num_classes )
     elif model_name == 'S5':
@@ -177,8 +177,4 @@ def build_model(args, model_name):
         model = Mega(d_input=3, d_model=128, n_layers=args.num_layers, d_output=args.num_classes, seq_len=16*16 ) 
     elif model_name == 'S6':
         model = S6_SSM(d_input=3, d_model=128, n_layers=args.num_layers, d_output=args.num_classes )     
-    elif model_name == 'SSM_ind_head':
-        model = SSM_Individual_Head(d_input=3)
-    elif model_name == 'Transformer':
-        model = Transformer(d_input=3, n_layers=args.num_layers, d_output=args.num_classes )
     return model

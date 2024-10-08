@@ -17,10 +17,10 @@ def Build_Parser():
                         help='learning rate')
     parser.add_argument('--no-cuda', action='store_true', default=False,
                         help='disables CUDA training')
-    parser.add_argument('--use_inject', action='store_true', default=False,
-                        help='use noise inject')
-    parser.add_argument('--inject_method', type=int, default=-1,
-                        help='the method used in inject training')
+    parser.add_argument('--use_AdSS', action='store_true', default=False,
+                        help='use AdSS module')
+    parser.add_argument('--AdSS_Type', type=str, choices=['relu', 'sgmd', 'tanh'], default='relu',
+                        help='the AdSS type used in training')
     parser.add_argument('--epsilon', default=8/255,
                         help='perturbation')
     parser.add_argument('--num-steps', default=10,
@@ -37,14 +37,12 @@ def Build_Parser():
                         help='how many batches to wait before logging training status')
     parser.add_argument('--model-dir', default='checkpoints',
                         help='directory of model for saving checkpoint')
-    parser.add_argument('--save-freq', '-s', default=10, type=int, metavar='N',
-                        help='save frequency')
     parser.add_argument('--AT_type', default='Madry', type=str,
                         help='Madry, TRADE, FreeAT or YOPO in adversrial training stage')
     parser.add_argument('--attack_type', default='PGD', type=str,
                         help='PGD or AA attack in test stage')
     parser.add_argument('--model_name', default='SSM', type=str,
-                        help='SSM, DSS, S5, Mega, S6, Transformer')
+                        help='SSM, DSS, S5, Mega, S6')
     parser.add_argument('--AA_lags', type=int, default=4, metavar='N',
                     help='how many batches to wait before logging training status')
     #! AA evaluation part

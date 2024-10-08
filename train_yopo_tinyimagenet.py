@@ -67,8 +67,8 @@ def AA_eval(model,args):
                 args.save_dir, 'aa', args.version, args.n_ex, args.epsilon))
     
 def main():
-    if args.use_inject:
-        log_path = os.path.join(model_dir,'train_log'+args.model_name+'_inject_{}'.format(args.inject_method)+args.AT_type+'.txt')
+    if args.use_AdSS:
+        log_path = os.path.join(model_dir,'train_log'+args.model_name+'AdSS_{}'.format(args.AdSS_Type)+args.AT_type+'.txt')
     else:    
         log_path = os.path.join(model_dir,'train_log'+args.model_name+args.AT_type+'.txt')
 
@@ -107,13 +107,12 @@ def main():
                  .format(epoch, train_loss, train_acc, test_loss, test_acc, adv_test_loss, adv_test_acc))
     
         # save checkpoint
-        if epoch % args.save_freq == 0:
-            if args.use_inject:
-                torch.save(model.state_dict(),
-                       os.path.join(model_dir, args.model_name+args.AT_type+'{}'.format(args.inject_method)+ '-epoch{}.pt'.format(epoch)))
-            else:
-                torch.save(model.state_dict(),
-                       os.path.join(model_dir, args.model_name+args.AT_type+ '-epoch{}.pt'.format(epoch)))
+        if args.use_AdSS:
+            torch.save(model.state_dict(),
+                    os.path.join(model_dir, args.model_name+args.AT_type+'{}'.format(args.AdSS_Type)+ '-epoch{}.pt'.format(epoch)))
+        else:
+            torch.save(model.state_dict(),
+                    os.path.join(model_dir, args.model_name+args.AT_type+ '-epoch{}.pt'.format(epoch)))
         scheduler.step()
     AA_eval(model,args)
 

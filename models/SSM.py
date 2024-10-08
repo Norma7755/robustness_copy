@@ -17,8 +17,8 @@ class SSM(nn.Module):
                  lr:float = 1e-3,
                  use_lyap:bool = False,
                  mode:str = 'nplr',
-                 use_inject = False,
-                 inject_method=0,
+                 use_AdSS = False,
+                 AdSS_Type='relu',
                  patch_size=None
                  ):
         super(SSM, self).__init__()  
@@ -27,14 +27,12 @@ class SSM(nn.Module):
         self.d_state = d_state
         self.dropout = dropout
         self.l_max = l_max
-        self.adjust = use_lyap
-        # self.avg_vol = [0, 0, 0, 0]
         mapping_layers = []
         self.norms = nn.ModuleList()
         self.post_norm = nn.LayerNorm(d_model)
         
-        self.use_inject = use_inject
-        self.inject_method=inject_method
+        self.use_AdSS = use_AdSS
+        self.AdSS_Type=AdSS_Type
         self.patch_size = patch_size
         if patch_size is not None:
             self.input = nn.Conv2d(d_input, d_model, kernel_size=patch_size, stride=patch_size)
@@ -51,15 +49,10 @@ class SSM(nn.Module):
                                bidirectional=False,
                                mode = mode,
                                lr = lr,
-                               use_inject=use_inject,
-                               inject_method=self.inject_method)
+                               use_AdSS=use_AdSS,
+                               AdSS_Type=self.AdSS_Type)
             mapping_layers.append(encoder_layer)
-            if use_lyap:
-                adjusts.append(Lyap(d_model))
             self.norms.append(nn.LayerNorm(d_model))
-            # mapping_layers.append(nn.LayerNorm(d_model))
-        if use_lyap:
-            self.adjusts = nn.Sequential(*adjusts)
         self.mapping_layers = nn.Sequential(*mapping_layers)
         self.output = nn.Linear(d_model, d_output)
 
@@ -99,12 +92,8 @@ class SSM(nn.Module):
             x = self.norms[num_layer](x)
             num_layer += 1
         # (B L D) -> (B D L) -> (B L D)
-        # x = self.output_linear(x.transpose(-1,-2)).transpose(-1,-2)
         x = self.output(x.mean(dim=1))
-        if ret_lyap:
-            return x, lyap/self.n_layers
-        else:
-            return x
+        return x
                 
 class S5_SSM(nn.Module):
     def __init__(self,
@@ -135,10 +124,7 @@ class S5_SSM(nn.Module):
             mapping_layers.append(encoder_layer)
             
             self.norms.append(nn.LayerNorm(d_model))
-            # mapping_layers.append(nn.LayerNorm(d_model))
         
-        # if patch_size is not None:
-        #     self.patch_emb = nn.Conv2d(3, 3, kernel_size=patch_size, stride=patch_size)
         self.mapping_layers = nn.Sequential(*mapping_layers)
         self.output = nn.Linear(d_model, d_output)
 
@@ -166,98 +152,9 @@ class S5_SSM(nn.Module):
             x = self.norms[num_layer](x)
             num_layer += 1
         # (B L D) -> (B D L) -> (B L D)
-        # x = self.output_linear(x.transpose(-1,-2)).transpose(-1,-2)
         x = self.output(x.mean(dim=1))
         return x
     
-    
-class Lyap(nn.Module):
-    def __init__(self,
-                 d_model:int = 128,
-                 seq_len:int = 1024, 
-                 lmbda:float = 0.01
-                 ):
-        super(Lyap, self).__init__()  
-        
-        self.d_model = d_model
-        self.lmbda = lmbda
-        # self.time_catch = nn.Sequential(nn.Linear(seq_len, seq_len), nn.GELU(), nn.Linear(seq_len, 1), nn.Tanh())
-    
-        # self.output = nn.Parameter(0.01 * torch.rand((d_model, d_model)))
-        # self.time_catch = nn.Sequential(nn.Conv1d(d_model, d_model, 3, 1, 1, bias=False))
-        # self.encoder = nn.Sequential(nn.Linear(d_model, d_model, bias=False))
-        self.time_catch = nn.Sequential(nn.Conv1d(3, d_model, 3, 1, 1, bias=False), nn.GELU(), nn.Conv1d(d_model, d_model, 3, 1, 1, bias=False))
-        self.encoder = nn.Sequential(nn.Linear(d_model, d_model, bias=False), nn.GELU(), nn.Linear(d_model, d_model, bias=False))
-    def forward(self, y_ori, x):
-
-        
-        lyap = torch.diff(y_ori, dim=1)**2
-        lyap = torch.std(lyap, dim=(-2,-1))
-        
-        return lyap
-
-    
-class SSM_Individual_Head(nn.Module):
-    def __init__(self,
-                 d_input:int = 1,
-                 d_model:int = 128,
-                 d_output:int = 10, 
-                 n_layers:int = 4, 
-                 d_state:int = 64,
-                 dropout:int = 0.0,
-                 l_max:int = 1,
-                 lr:float = 1e-3):
-        super(SSM_Individual_Head, self).__init__()  
-        self.d_model = d_model
-        self.n_layers = n_layers
-        self.d_state = d_state
-        self.dropout = dropout
-        self.l_max = l_max
-        
-        mapping_layers = []
-        heads = []
-        outputs = []
-        self.norms = nn.ModuleList()
-        self.input = nn.Linear(d_input, d_model)
-        for _ in range(self.n_layers):  
-            encoder_layer = S4(self.d_model,
-                               self.d_state,
-                               transposed = False,
-                               activation = 'gelu',
-                               bidirectional=False,
-                               mode = 'real',
-                               lr = lr)
-            mapping_layers.append(encoder_layer)
-            self.norms.append(nn.LayerNorm(d_model))
-            heads.append(nn.Sequential(
-            nn.Conv1d(d_model, 2*d_model, kernel_size=1),
-            nn.GLU(dim=-2),
-        ))
-            outputs.append(nn.Linear(d_model, d_output))
-            # mapping_layers.append(nn.LayerNorm(d_model))
-        self.mapping_layers = nn.Sequential(*mapping_layers)
-        self.heads = nn.Sequential(*heads)
-        self.outputs = nn.Sequential(*outputs)
-
-    def forward(self, x, state = None):
-        # (B C H W) -> (B L=H*W C)
-        B,C,H,W = x.shape
-        x = x.view(B, H*W, C)
-        # (B L C) -> (B L D)
-        x = self.input(x)
-        outputs = []
-        num_layer = 0
-        for layer in self.mapping_layers:
-            residual = x
-            x, state = layer(x, state = state)
-            x = residual + x
-            x = self.norms[num_layer](x)
-            x_out = self.heads[num_layer](x.transpose(-1,-2)).transpose(-1,-2)
-            x_out = self.outputs[num_layer](x_out).mean(dim=1)
-            outputs.append(x_out)
-            num_layer += 1
-        # (B L D) -> (B D L) -> (B L D)
-        return outputs
 
 class Mega(nn.Module):
     def __init__(self, 
@@ -291,7 +188,6 @@ class Mega(nn.Module):
             self.input = nn.Linear(d_input, d_model)
         self.mapping_layers = nn.Sequential(*mapping_layers)
         self.mapping_layers = nn.Sequential(*mapping_layers)
-        # self.input = nn.Linear(d_input, d_model)
         self.output = nn.Linear(d_model, d_output)
     
     def forward(self, x, state = None):
@@ -394,10 +290,9 @@ class S6_SSM(nn.Module):
         else:
             self.input = nn.Linear(d_input, d_model)
         self.mapping_layers = nn.Sequential(*mapping_layers)
-        # self.input = nn.Linear(d_input, d_model)
         self.output = nn.Linear(d_model, d_output)
     
-    def forward(self, x, use_inject=False, state = None):
+    def forward(self, x, state = None):
         if self.patch_size is not None:
             x = self.input(x)
             B,C,H,W = x.shape

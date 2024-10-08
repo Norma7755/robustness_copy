@@ -27,30 +27,30 @@ pip install -r requirements.txt
 All run scripts are located in the `scripts` folder. To obtain the training results of various models on the MNIST dataset under Standard Training, Madry Training, and Trades Training methods, please run the following command:
 
 ```python
-python train_trades_mnist.py --AT_type Nat --model_name SSM --attack_type PGD --model-dir checkpoints/model-MNIST
+python train_trades_mnist.py --AT_type Nat --model_name SSM --attack_type PGD --model-dir checkpoints/model-MNIST --num_layers 2 --num-classes 10 --epochs 100 --epsilon 0.3 --step-size 0.04 --beta 1
 ```
 
-Where `--AT_type` specifies different training methods (Nat, Madry, TRADE), `--model_name` specifies the model type, and `--model-dir` specifies the location to save the results.
+Where `--AT_type` specifies different training methods (Nat, Madry, TRADE), `--model_name` specifies the model type, and `--model-dir` specifies the location to save the results. The detailed model and training parameters refer to Appendix C in our paper.
 
-To obtain results for CIFAR10 and Tiny-Imagenet, please run the `train_trades_cifar10.py` and `train_freeat_tinyimagenet.py` scripts:
+To obtain results for CIFAR10 and Tiny-Imagenet, please run the `train_trades_cifar10.py` and `train_trades_tinyimagenet.py` scripts:
 
 ```python
-python train_trades_cifar10.py --AT_type Nat --model_name SSM --attack_type PGD --model-dir checkpoints/model-CIFAR10
-python train_trades_tinyimagenet.py --AT_type Nat --model_name SSM --attack_type PGD --model-dir checkpoints/model-tinyimagenet
+python train_trades_cifar10.py --AT_type Nat --model_name SSM --attack_type PGD --model-dir checkpoints/model-CIFAR10 --num_layers 4 --num-classes 10 --epochs 180 --epsilon 0.031 --step-size 0.007 --beta 6
+python train_trades_tinyimagenet.py --AT_type Nat --model_name SSM --attack_type PGD --model-dir checkpoints/model-tinyimagenet --num_layers 4 --num-classes 50 --epochs 180 --epsilon 0.031 --step-size 0.007 --beta 6
 ```
 
 To obtain the training results of various models under the FreeAT and YOPO training methods, please run the following commands:
 
 ```python
-python train_freeat_mnist.py --AT_type FreeAT --model_name SSM --attack_type PGD --model-dir checkpoints/model-MNIST
-python train_yopo_mnist.py --AT_type YOPO --model_name SSM --attack_type PGD --model-dir checkpoints/model-MNIST
+python train_freeat_mnist.py --AT_type FreeAT --model_name SSM --attack_type PGD --model-dir checkpoints/model-MNIST --num_layers 2 --num-classes 10 --epochs 100 --epsilon 0.3 --step-size 0.04 --beta 1
+python train_yopo_mnist.py --AT_type YOPO --model_name SSM --attack_type PGD --model-dir checkpoints/model-MNIST --num_layers 2 --num-classes 10 --epochs 100 --epsilon 0.3 --step-size 0.04 --beta 1
 ```
 
-To obtain the results of the Adss method, add the Adss method parameters `--use_inject --inject_method 1` to the SSM and DSS models. The specific commands are as follows:
+To obtain the results of the Adss method, add the Adss method parameters `--use_AdSS --AdSS_Type relu` to the `SSM` and `DSS` models. The specific commands are as follows:
 
 ```python
-python train_freeat_mnist.py --AT_type FreeAT --model_name SSM --attack_type PGD --model-dir checkpoints/model-MNIST --use_inject --inject_method 1
-python train_freeat_mnist.py --AT_type FreeAT --model_name DSS --attack_type PGD --model-dir checkpoints/model-MNIST --use_inject --inject_method 1
+python train_trades_mnist.py --AT_type Nat --model_name SSM --attack_type PGD --model-dir checkpoints/model-MNIST --num_layers 2 --num-classes 10 --epochs 100 --epsilon 0.3 --step-size 0.04 --beta 1 --use_AdSS --AdSS_Type relu
+python train_trades_mnist.py --AT_type Nat --model_name DSS --attack_type PGD --model-dir checkpoints/model-MNIST --num_layers 2 --num-classes 10 --epochs 100 --epsilon 0.3 --step-size 0.04 --beta 1 --use_AdSS --AdSS_Type relu
 ```
 
 The specific implementation of the Adss module is located in the file `models/src/models/sequence/ss/s4.py`.

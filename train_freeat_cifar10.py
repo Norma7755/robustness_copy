@@ -136,8 +136,8 @@ def AA_adv_test(model,args,log_path):
     
 def main():
     # init model, ResNet18() can be also used here for training
-    if args.use_inject:
-        log_path = os.path.join(model_dir,'train_log'+args.model_name+'_inject_{}'.format(args.inject_method)+args.AT_type+'.txt')
+    if args.use_AdSS:
+        log_path = os.path.join(model_dir,'train_log'+args.model_name+'_AdSS_{}'.format(args.AdSS_Type)+args.AT_type+'.txt')
     else:    
         log_path = os.path.join(model_dir,'train_log'+args.model_name+args.AT_type+'.txt')
 
@@ -153,31 +153,18 @@ def main():
     for epoch in range(1, args.epochs + 1):
         # adversarial training
         adv_train(args, model, device, train_loader, optimizer, epoch)
-
-        # evaluation on natural examples
-        # print('================================================================')
-        # train_loss, train_acc = eval_train(args, model, device, train_loader)
-        
-        # test_loss, test_acc = eval_test(args, model, device, test_loader)
-        # adv_test_loss, adv_test_acc = adv_test(args, model, device, test_loader, args.attack_type)
-
-        # if args.AT_type != 'Nat':
-        #     adv_test_loss, adv_test_acc = AA_adv_test()
-            # adv_train_loss, adv_train_acc = adv_eval_train(args, model, device, train_loader, args.attack_type)
         print('================================================================')
         if args.AT_type != 'Nat' and epoch % args.AA_lags == 0:
             AA_adv_test(model, args, log_path)
         # save checkpoint
-        if epoch % args.save_freq == 0:
-            if args.use_inject:
-                torch.save(model.state_dict(),
-                       os.path.join(model_dir, args.model_name+args.AT_type+'{}'.format(args.inject_method)+ '-epoch{}.pt'.format(epoch)))
-            else:
-                torch.save(model.state_dict(),
-                       os.path.join(model_dir, args.model_name+args.AT_type+ '-epoch{}.pt'.format(epoch)))
+        if args.use_AdSS:
+            torch.save(model.state_dict(),
+                    os.path.join(model_dir, args.model_name+args.AT_type+'{}'.format(args.AdSS_Type)+ '-epoch{}.pt'.format(epoch)))
+        else:
+            torch.save(model.state_dict(),
+                    os.path.join(model_dir, args.model_name+args.AT_type+ '-epoch{}.pt'.format(epoch)))
         scheduler.step()
     AA_eval(model,args)
 
 if __name__ == '__main__':
-    print(args)
     main()
