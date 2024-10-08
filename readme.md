@@ -52,6 +52,7 @@ To obtain the results of the Adss method, add the Adss method parameters `--use_
 python train_trades_mnist.py --AT_type Nat --model_name SSM --attack_type PGD --model-dir checkpoints/model-MNIST --num_layers 2 --num-classes 10 --epochs 100 --epsilon 0.3 --step-size 0.04 --beta 1 --use_AdSS --AdSS_Type relu
 python train_trades_mnist.py --AT_type Nat --model_name DSS --attack_type PGD --model-dir checkpoints/model-MNIST --num_layers 2 --num-classes 10 --epochs 100 --epsilon 0.3 --step-size 0.04 --beta 1 --use_AdSS --AdSS_Type relu
 ```
+Where `--AdSS_Type` specifies different AdSS types (`relu, sgmd, tanh`).
 
 The specific implementation of the Adss module is located in the file `models/src/models/sequence/ss/s4.py`.
 
